@@ -1,19 +1,17 @@
 # SlackCleanup
 
-**TODO: Add description**
+Very simple exercise with Elixir to cleanup unused files from Slack.
 
-## Installation
+The purpose of this small project is just to exercise with Elixir.
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed as:
+## Compiling and Running
 
-  1. Add slack_cleanup to your list of dependencies in `mix.exs`:
+You can easily compile like this:
 
-        def deps do
-          [{:slack_cleanup, "~> 0.0.1"}]
-        end
+  mix deps.get
+  mix escript.build
 
-  2. Ensure slack_cleanup is started before your application:
+And you should run from the commmand-line like this:
 
-        def application do
-          [applications: [:slack_cleanup]]
-        end
+  ./slack_cleanup --domain=YOUR_SLACK_DOMAIN --token=YOUR_SLACK_SECRET_API_TOKEN
+
