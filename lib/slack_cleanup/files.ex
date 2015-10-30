@@ -1,4 +1,4 @@
-defmodule SlackFiles do
+defmodule SlackCleanup.Files do
   use HTTPoison.Base
 
   @expected_fields ~w(files)
