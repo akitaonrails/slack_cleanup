@@ -1,11 +1,12 @@
 defmodule SlackCleanup.Janitor do
-  defp post(options, item) do
+  def post(options, item) do
     url    = delete_url(options[:domain])
     params = delete_params(options[:token], item["id"])
-    case HTTPoison.post!(url, params) do
-      %HTTPoison.Response{status_code: 200} -> {:ok, item["permalink"]}
-      %HTTPoison.Response{status_code: _}   -> {:error, item["permalink"], :not_found}
-      %HTTPoison.Error{reason: reason}      -> {:error, item["permalink"], reason}
+    IO.puts "Deleting #{item["permalink"]}"
+    case HTTPotion.post(url, params) do
+      %HTTPotion.Response{status_code: 200} -> {:ok, item["permalink"]}
+      %HTTPotion.Response{status_code: _}   -> {:error, item["permalink"], :not_found}
+      %HTTPotion.HTTPError{message: reason}  -> {:error, item["permalink"], reason}
     end
   end
 
@@ -14,6 +15,6 @@ defmodule SlackCleanup.Janitor do
   end
 
   defp delete_params(token, file_id) do
-    {:form, [token: token, file: file_id, set_active: "true", "_attempts": "1"]}
+    [body: "token=#{token}&file=#{file_id}&set_active=true&_attemps=1"]
   end
 end

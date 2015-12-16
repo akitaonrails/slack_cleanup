@@ -11,9 +11,10 @@ defmodule SlackCleanup do
   end
 
   def process(options) do
-    Files.fetch(options[:token])
-    |> Enum.map( fn (item) -> Task.async(fn -> Janitor.post(options, item) end) end )
-    |> Enum.map( fn (task) -> Task.await(task) end )
+    files = Files.fetch(options[:token])
+    files[:files]
+    |> Enum.map( &Task.async(fn -> Janitor.post(options, &1) end) )
+    |> Enum.map( &Task.await/1 )
     |> Enum.each( fn (response) -> 
       case response do
         {:ok, permalink}            -> IO.puts "Successfully deleted #{permalink}"
