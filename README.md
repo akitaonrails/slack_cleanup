@@ -8,10 +8,13 @@ The purpose of this small project is just to exercise with Elixir.
 
 You can easily compile like this:
 
-  mix deps.get
-  mix escript.build
+```
+mix deps.get
+mix escript.build
+```
 
 And you should run from the commmand-line like this:
 
-  ./slack_cleanup --domain=YOUR_SLACK_DOMAIN --token=YOUR_SLACK_SECRET_API_TOKEN
-
+```
+./slack_cleanup --domain=YOUR_SLACK_DOMAIN --token=YOUR_SLACK_SECRET_API_TOKEN
+```
