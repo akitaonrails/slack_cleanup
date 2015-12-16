@@ -1,20 +1,31 @@
 defmodule SlackCleanup.Janitor do
+  alias HTTPotion.Response
+  alias HTTPotion.HTTPError
+
+  @error_in_200_template "{\"ok\":false,\"error\""
+
   def post(options, item) do
-    url    = delete_url(options[:domain])
-    params = delete_params(options[:token], item["id"])
     IO.puts "Deleting #{item["permalink"]}"
-    case HTTPotion.post(url, params) do
-      %HTTPotion.Response{status_code: 200} -> {:ok, item["permalink"]}
-      %HTTPotion.Response{status_code: _}   -> {:error, item["permalink"], :not_found}
-      %HTTPotion.HTTPError{message: reason}  -> {:error, item["permalink"], reason}
+    try do
+      response = HTTPotion.post(url(options, item), timeout: 10_000)
+      case response do
+        %Response{status_code: 200, body: @error_in_200_template <> body} ->
+          {:error, item["permalink"], Poison.decode!(@error_in_200_template <> body)["error"]}
+        %Response{status_code: 200} -> {:ok, item["permalink"]}
+        %Response{status_code: _}   -> {:error, item["permalink"], :not_found}
+        %HTTPError{message: reason}  -> {:error, item["permalink"], reason}
+      end
+    rescue
+      error in HTTPError ->
+        case error do
+          %HTTPError{message: "req_timedout"} ->
+            :timer.sleep(1_000)
+            post(options, item)
+        end
     end
   end
 
-  defp delete_url(domain) do
-    "https://#{domain}.slack.com/api/files.delete?t=#{:os.system_time(:seconds)}"
-  end
-
-  defp delete_params(token, file_id) do
-    [body: "token=#{token}&file=#{file_id}&set_active=true&_attemps=1"]
+  defp url(options, item) do
+    "https://#{options[:domain]}.slack.com/api/files.delete?token=#{options[:token]}&file=#{item["id"]}"
   end
 end
