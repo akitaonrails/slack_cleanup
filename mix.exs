@@ -29,9 +29,9 @@ defmodule SlackCleanup.Mixfile do
   # Type "mix help deps" for more examples and options
   defp deps do
     [
-      {:ibrowse, github: "cmullaparthi/ibrowse", tag: "v4.1.2"},
-      {:httpotion, "~> 2.1.0"},
-      {:poison, "~> 1.5"}
+      {:ibrowse, "~> 4.2.2"},
+      {:httpotion, "~> 3.0.0"},
+      {:poison, "~> 2.2.0"}
     ]
   end
 end
